@@ -22,12 +22,27 @@ public:
 
     Employee(const Employee &e) : name(e.name), position(e.position), salary(e.salary) {
         cout << "Employee copied: " << this->name << endl;
-        employeeCount++;
+         employeeCount++;
     }
 
     ~Employee() {
         cout << "Employee destroyed: " << this->name << endl;
         employeeCount--;
+    }
+
+    friend ostream& operator<<(ostream& os, const Employee& e) {
+        os << "Name: " << e.name << ", Position: " << e.position << ", Salary: " << e.salary;
+        return os;
+    }
+
+    friend istream& operator>>(istream& is, Employee& e) {
+        cout << "Enter name: ";
+        is >> e.name;
+        cout << "Enter position: ";
+        is >> e.position;
+        cout << "Enter salary: ";
+        is >> e.salary;
+        return is;
     }
 
     void display() const {
@@ -61,6 +76,21 @@ public:
 
     ~Payroll() { cout << "Payroll record destroyed for: " << this->employeeName << endl; }
 
+    friend ostream& operator<<(ostream& os, const Payroll& p) {
+        os << "Employee: " << p.employeeName << ", Base Salary: " << p.baseSalary << ", Bonus: " << p.bonus;
+        return os;
+    }
+
+    friend istream& operator>>(istream& is, Payroll& p) {
+        cout << "Enter employee name: ";
+        is >> p.employeeName;
+        cout << "Enter base salary: ";
+        is >> p.baseSalary;
+        cout << "Enter bonus: ";
+        is >> p.bonus;
+        return is;
+    }
+
     void info() const {
         cout << "Employee: " << this->employeeName << ", Base Salary: " << this->baseSalary << ", Bonus: " << this->bonus << endl;
     }
@@ -90,6 +120,19 @@ public:
         totalDepartments--;
     }
 
+    friend ostream& operator<<(ostream& os, const Department& d) {
+        os << "Department: " << d.name << ", Number of Employees: " << d.numOfEmployees;
+        return os;
+    }
+
+    friend istream& operator>>(istream& is, Department& d) {
+        cout << "Enter department name: ";
+        is >> d.name;
+        cout << "Enter number of employees: ";
+        is >> d.numOfEmployees;
+        return is;
+    }
+
     void details() const {
         cout << "Department: " << this->name << ", Number of Employees: " << this->numOfEmployees << endl;
     }
@@ -103,41 +146,39 @@ int Department::totalDepartments = 0;
 
 int main() {
     Employee emp1("John Doe", "Software Engineer", 75000);
-    emp1.display();
-    cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
-
-    Employee emp2("Alice Brown", "Manager");
-    emp2.display();
-    cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
-
-   // Employee emp3("Michael Scott");
-    //emp3.display();
-    //cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
-
-    Employee empCopy = emp1;
-    empCopy.display();
+    cout << emp1 << endl;
     cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
 
     Payroll payroll1("John Doe", 75000, 5000);
-    payroll1.info();
-
-    Payroll payroll2("Alice Brown", 90000);
-    payroll2.info();
-
-    Payroll payrollCopy = payroll1;
-    payrollCopy.info();
+    cout << payroll1 << endl;
 
     Department dept1("IT Department", 50);
-    dept1.details();
+    cout << dept1 << endl;
     cout << "Total Departments: " << Department::getTotalDepartments() << endl;
 
-    Department dept2("HR Department");
-    dept2.details();
+    Employee emp2;
+    cin >> emp2;
+    cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
+
+    Payroll payroll2;
+    cin >> payroll2;
+
+    Department dept2;
+    cin >> dept2;
     cout << "Total Departments: " << Department::getTotalDepartments() << endl;
 
-    Department deptCopy = dept1;
-    deptCopy.details();
-    cout << "Total Departments: " << Department::getTotalDepartments() << endl;
+    cout << emp2 << endl;
+    cout << payroll2 << endl;
+    cout << dept2 << endl;
+
+    Employee empcopy = emp1;
+    empcopy.display();
+
+    Payroll payrollcopy = payroll1;
+    payrollcopy.info();
+
+    Department deptcopy = dept1;
+    deptcopy.details();
 
     return 0;
 }
