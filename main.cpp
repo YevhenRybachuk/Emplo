@@ -18,13 +18,13 @@ public:
     Employee(string n, string p, double s) : name(n), position(p), salary(s) {}
 
     Employee(const Employee &e) : name(e.name), position(e.position), salary(e.salary) {
-        cout << "Employee copied: " << name << endl;
+        cout << "Employee copied: " << this->name << endl;
     }
 
-    ~Employee() { cout << "Employee destroyed: " << name << endl; }
+    ~Employee() { cout << "Employee destroyed: " << this->name << endl; }
 
     void display() const {
-        cout << "Name: " << name << ", Position: " << position << ", Salary: " << salary << endl;
+        cout << "Name: " << this->name << ", Position: " << this->position << ", Salary: " << this->salary << endl;
     }
 };
 
@@ -43,13 +43,13 @@ public:
     Payroll(string n, double s, double b) : employeeName(n), baseSalary(s), bonus(b) {}
 
     Payroll(const Payroll &p) : employeeName(p.employeeName), baseSalary(p.baseSalary), bonus(p.bonus) {
-        cout << "Payroll copied for: " << employeeName << endl;
+        cout << "Payroll copied for: " << this->employeeName << endl;
     }
 
-    ~Payroll() { cout << "Payroll record destroyed for: " << employeeName << endl; }
+    ~Payroll() { cout << "Payroll record destroyed for: " << this->employeeName << endl; }
 
     void info() const {
-        cout << "Employee: " << employeeName << ", Base Salary: " << baseSalary << ", Bonus: " << bonus << endl;
+        cout << "Employee: " << this->employeeName << ", Base Salary: " << this->baseSalary << ", Bonus: " << this->bonus << endl;
     }
 };
 
@@ -65,13 +65,13 @@ public:
     Department(string n, int num) : name(n), numOfEmployees(num) {}
 
     Department(const Department &d) : name(d.name), numOfEmployees(d.numOfEmployees) {
-        cout << "Department copied: " << name << endl;
+        cout << "Department copied: " << this->name << endl;
     }
 
-    ~Department() { cout << "Department destroyed: " << name << endl; }
+    ~Department() { cout << "Department destroyed: " << this->name << endl; }
 
     void details() const {
-        cout << "Department: " << name << ", Number of Employees: " << numOfEmployees << endl;
+        cout << "Department: " << this->name << ", Number of Employees: " << this->numOfEmployees << endl;
     }
 };
 
