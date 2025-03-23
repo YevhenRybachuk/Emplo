@@ -107,6 +107,11 @@ int main() {
     emp1.display();
     cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
 
+
+    Employee emp2 = emp1;
+    emp2.display();
+    cout << "Total Employees after copying: " << Employee::getEmployeeCount() << endl;
+
     Manager mgr1("Walter White", "Project Manager", 90000, 10);
     mgr1.display();
 
