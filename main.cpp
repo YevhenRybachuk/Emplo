@@ -1,185 +1,122 @@
 #include <iostream>
+#include <vector>
 #include <string>
 
 using namespace std;
 
-class Employee {
-private:
+class Person {
+protected:
     string name;
+public:
+    Person(string n = "Unknown") : name(n) {
+        cout << "Person created: " << name << endl;
+    }
+    virtual ~Person() {
+        cout << "Person destroyed: " << name << endl;
+    }
+    virtual void display() const {
+        cout << "Name: " << name << endl;
+    }
+};
+
+class Employee : public Person {
+protected:
     string position;
     double salary;
     static int employeeCount;
 public:
-    Employee() : Employee("Unknown", "Unknown", 0.0) {}
-
-    Employee(string n) : Employee(n, "Unknown", 0.0) {}
-
-    Employee(string n, string p) : Employee(n, p, 0.0) {}
-
-    Employee(string n, string p, double s) : name(n), position(p), salary(s) {
+    Employee(string n = "Unknown", string p = "Unknown", double s = 0.0)
+        : Person(n), position(p), salary(s) {
         employeeCount++;
+        cout << "Employee created: " << name << endl;
     }
-
-    Employee(const Employee &e) : name(e.name), position(e.position), salary(e.salary) {
-        cout << "Employee copied: " << this->name << endl;
-         employeeCount++;
+    Employee(const Employee &e) : Person(e.name), position(e.position), salary(e.salary) {
+        employeeCount++;
+        cout << "Employee copied: " << name << endl;
     }
-
     ~Employee() {
-        cout << "Employee destroyed: " << this->name << endl;
+        cout << "Employee destroyed: " << name << endl;
         employeeCount--;
     }
-
-    friend ostream& operator<<(ostream& os, const Employee& e) {
-        os << "Name: " << e.name << ", Position: " << e.position << ", Salary: " << e.salary;
-        return os;
+    static int getEmployeeCount() { return employeeCount; }
+    virtual void display() const override {
+        cout << "Employee - Name: " << name << ", Position: " << position << ", Salary: " << salary << endl;
     }
+    string getName() const { return name; }
+    double getSalary() const { return salary; }
+};
+int Employee::employeeCount = 0;
 
-    friend istream& operator>>(istream& is, Employee& e) {
-        cout << "Enter name: ";
-        is >> e.name;
-        cout << "Enter position: ";
-        is >> e.position;
-        cout << "Enter salary: ";
-        is >> e.salary;
-        return is;
+class Manager : public Employee {
+private:
+    int teamSize;
+public:
+    Manager(string n, string p, double s, int t) : Employee(n, p, s), teamSize(t) {
+        cout << "Manager created: " << name << endl;
     }
-
-    void display() const {
-        cout << "Name: " << this->name << ", Position: " << this->position << ", Salary: " << this->salary << endl;
+    void display() const override {
+        cout << "Manager - Name: " << name << ", Position: " << position
+             << ", Salary: " << salary << ", Team Size: " << teamSize << endl;
     }
-
-    static int getEmployeeCount() {
-        return employeeCount;
+    ~Manager() {
+        cout << "Manager destroyed: " << name << endl;
     }
 };
 
-int Employee::employeeCount = 0;
-
 class Payroll {
 private:
-    string employeeName;
-    double baseSalary;
+    Employee *employee;
     double bonus;
 public:
-    Payroll() : Payroll("Unknown", 0.0, 0.0) {}
-
-    Payroll(string n) : Payroll(n, 0.0, 0.0) {}
-
-    Payroll(string n, double s) : Payroll(n, s, 0.0) {}
-
-    Payroll(string n, double s, double b) : employeeName(n), baseSalary(s), bonus(b) {}
-
-    Payroll(const Payroll &p) : employeeName(p.employeeName), baseSalary(p.baseSalary), bonus(p.bonus) {
-        cout << "Payroll copied for: " << this->employeeName << endl;
+    Payroll(Employee *e, double b = 0.0) : employee(e), bonus(b) {
+        cout << "Payroll created for: " << employee->getName() << endl;
     }
-
-    ~Payroll() { cout << "Payroll record destroyed for: " << this->employeeName << endl; }
-
-    friend ostream& operator<<(ostream& os, const Payroll& p) {
-        os << "Employee: " << p.employeeName << ", Base Salary: " << p.baseSalary << ", Bonus: " << p.bonus;
-        return os;
-    }
-
-    friend istream& operator>>(istream& is, Payroll& p) {
-        cout << "Enter employee name: ";
-        is >> p.employeeName;
-        cout << "Enter base salary: ";
-        is >> p.baseSalary;
-        cout << "Enter bonus: ";
-        is >> p.bonus;
-        return is;
-    }
-
     void info() const {
-        cout << "Employee: " << this->employeeName << ", Base Salary: " << this->baseSalary << ", Bonus: " << this->bonus << endl;
+        cout << "Payroll - Employee: " << employee->getName() << ", Salary: "
+             << employee->getSalary() << ", Bonus: " << bonus << endl;
+    }
+    ~Payroll() {
+        cout << "Payroll destroyed for: " << employee->getName() << endl;
     }
 };
 
 class Department {
 private:
     string name;
-    int numOfEmployees;
-    static int totalDepartments;
+    vector<Employee*> employees;
 public:
-    Department() : Department("Unknown Department", 0) {}
-
-    Department(string n) : Department(n, 0) {}
-
-    Department(string n, int num) : name(n), numOfEmployees(num) {
-        totalDepartments++;
+    Department(string n = "Unknown") : name(n) {
+        cout << "Department created: " << name << endl;
     }
-
-    Department(const Department &d) : name(d.name), numOfEmployees(d.numOfEmployees) {
-        cout << "Department copied: " << this->name << endl;
-        totalDepartments++;
+    void addEmployee(Employee* e) {
+        employees.push_back(e);
     }
-
-    ~Department() {
-        cout << "Department destroyed: " << this->name << endl;
-        totalDepartments--;
-    }
-
-    friend ostream& operator<<(ostream& os, const Department& d) {
-        os << "Department: " << d.name << ", Number of Employees: " << d.numOfEmployees;
-        return os;
-    }
-
-    friend istream& operator>>(istream& is, Department& d) {
-        cout << "Enter department name: ";
-        is >> d.name;
-        cout << "Enter number of employees: ";
-        is >> d.numOfEmployees;
-        return is;
-    }
-
     void details() const {
-        cout << "Department: " << this->name << ", Number of Employees: " << this->numOfEmployees << endl;
+        cout << "Department: " << name << ", Employees: " << employees.size() << endl;
+        for (const auto& e : employees) {
+            e->display();
+        }
     }
-
-    static int getTotalDepartments() {
-        return totalDepartments;
+    ~Department() {
+        cout << "Department destroyed: " << name << endl;
     }
 };
 
-int Department::totalDepartments = 0;
-
 int main() {
-    Employee emp1("John Doe", "Software Engineer", 75000);
-    cout << emp1 << endl;
+    Employee emp1("Vasya Pupkin", "Software Engineer", 75000);
+    emp1.display();
     cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
 
-    Payroll payroll1("John Doe", 75000, 5000);
-    cout << payroll1 << endl;
+    Manager mgr1("Walter White", "Project Manager", 90000, 10);
+    mgr1.display();
 
-    Department dept1("IT Department", 50);
-    cout << dept1 << endl;
-    cout << "Total Departments: " << Department::getTotalDepartments() << endl;
+    Payroll payroll1(&emp1, 5000);
+    payroll1.info();
 
-    Employee emp2;
-    cin >> emp2;
-    cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
-
-    Payroll payroll2;
-    cin >> payroll2;
-
-    Department dept2;
-    cin >> dept2;
-    cout << "Total Departments: " << Department::getTotalDepartments() << endl;
-
-    cout << emp2 << endl;
-    cout << payroll2 << endl;
-    cout << dept2 << endl;
-
-    Employee empcopy = emp1;
-    empcopy.display();
-
-    Payroll payrollcopy = payroll1;
-    payrollcopy.info();
-
-    Department deptcopy = dept1;
-    deptcopy.details();
+    Department dept1("IT Department");
+    dept1.addEmployee(&emp1);
+    dept1.addEmployee(&mgr1);
+    dept1.details();
 
     return 0;
 }
-
