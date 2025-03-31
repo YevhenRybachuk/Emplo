@@ -14,8 +14,16 @@ public:
     virtual ~Person() {
         cout << "Person destroyed: " << name << endl;
     }
+
     virtual void display() const {
         cout << "Name: " << name << endl;
+    }
+    virtual void work() const {
+        cout << name << " is doing general tasks." << endl;
+    }
+
+    void show() const {
+        cout << "[Person] Showing: " << name << endl;
     }
 };
 
@@ -42,6 +50,14 @@ public:
     virtual void display() const override {
         cout << "Employee - Name: " << name << ", Position: " << position << ", Salary: " << salary << endl;
     }
+
+    void work() const override {
+        cout << name << " is working as " << position << "." << endl;
+    }
+
+    void show() const {
+        cout << "[Employee] Showing: " << name << " (Position: " << position << ")" << endl;
+    }
     string getName() const { return name; }
     double getSalary() const { return salary; }
 };
@@ -57,6 +73,9 @@ public:
     void display() const override {
         cout << "Manager - Name: " << name << ", Position: " << position
              << ", Salary: " << salary << ", Team Size: " << teamSize << endl;
+    }
+    void work() const override {
+        cout << name << " is managing a team of " << teamSize << " people." << endl;
     }
     ~Manager() {
         cout << "Manager destroyed: " << name << endl;
@@ -107,7 +126,6 @@ int main() {
     emp1.display();
     cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
 
-
     Employee emp2 = emp1;
     emp2.display();
     cout << "Total Employees after copying: " << Employee::getEmployeeCount() << endl;
@@ -123,5 +141,12 @@ int main() {
     dept1.addEmployee(&mgr1);
     dept1.details();
 
+    Person* p = &emp1;
+    p->display();
+    p->work();
+
+    p->show();
+
     return 0;
 }
+
