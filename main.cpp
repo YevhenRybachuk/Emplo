@@ -4,6 +4,12 @@
 
 using namespace std;
 
+class Workable {
+public:
+    virtual void doWork() const = 0;
+    virtual ~Workable() {}
+};
+
 class Person {
 protected:
     string name;
@@ -22,12 +28,10 @@ public:
         cout << name << " is doing general tasks." << endl;
     }
 
-    void show() const {
-        cout << "[Person] Showing: " << name << endl;
-    }
+    virtual string getRole() const = 0;
 };
 
-class Employee : public Person {
+class Employee : public Person, public Workable {
 protected:
     string position;
     double salary;
@@ -47,16 +51,18 @@ public:
         employeeCount--;
     }
     static int getEmployeeCount() { return employeeCount; }
+
     virtual void display() const override {
         cout << "Employee - Name: " << name << ", Position: " << position << ", Salary: " << salary << endl;
     }
-
-    void work() const override {
+    virtual void work() const override {
         cout << name << " is working as " << position << "." << endl;
     }
-
-    void show() const {
-        cout << "[Employee] Showing: " << name << " (Position: " << position << ")" << endl;
+    virtual void doWork() const override {
+        cout << name << " is actively performing work tasks!" << endl;
+    }
+    virtual string getRole() const override {
+        return "Employee";
     }
     string getName() const { return name; }
     double getSalary() const { return salary; }
@@ -70,113 +76,106 @@ public:
     Manager(string n, string p, double s, int t) : Employee(n, p, s), teamSize(t) {
         cout << "Manager created: " << name << endl;
     }
-    void display() const override {
+    virtual void display() const override {
         cout << "Manager - Name: " << name << ", Position: " << position
              << ", Salary: " << salary << ", Team Size: " << teamSize << endl;
     }
-    void work() const override {
+    virtual void work() const override {
         cout << name << " is managing a team of " << teamSize << " people." << endl;
     }
-    ~Manager() {
+    virtual string getRole() const override {
+        return "Manager";
+    }
+    virtual ~Manager() {
         cout << "Manager destroyed: " << name << endl;
     }
 };
 
-class Intern final : public Employee {
+class Intern final : public Person, public Workable {
+private:
+    string department;
 public:
-    Intern(string n, string p, double s) : Employee(n, p, s) {
-        cout << "Intern created: " << name << endl;
+    Intern(string n, string dept) : Person(n), department(dept) {
+        cout << "Intern created: " << name << " in department " << department << endl;
     }
-    void display() const final override {
-        cout << "Intern - Name: " << name << ", Position: " << position << ", Salary: " << salary << endl;
+    virtual void display() const override {
+        cout << "Intern - Name: " << name << ", Department: " << department << endl;
     }
-    ~Intern() {
+    virtual void work() const override final {
+        cout << "Intern " << name << " is learning and doing small tasks." << endl;
+    }
+    virtual void doWork() const override {
+        cout << "Intern " << name << " is assisting in the " << department << " department!" << endl;
+    }
+    virtual string getRole() const override {
+        return "Intern";
+    }
+    virtual ~Intern() {
         cout << "Intern destroyed: " << name << endl;
     }
 };
 
 // class SeniorIntern : public Intern {
- //public:
-   //  SeniorIntern(string n, string p, double s) : Intern(n, p, s) {
-     //    cout << "SeniorIntern created: " << name << endl;
-     //}
- //};
+//public:
+//  SeniorIntern(string n, string p, double s) : Intern(n, p, s) {
+//    cout << "SeniorIntern created: " << name << endl;
+//}
+//};
 
-void showEmployeeDetails(const Employee& emp) {
-    emp.display();
+class Contractor : public Person, public Workable {
+private:
+    string specialization;
+    double hourlyRate;
+    int contractDuration;
+public:
+    Contractor(string n, string spec, double rate, int duration)
+        : Person(n), specialization(spec), hourlyRate(rate), contractDuration(duration) {
+        cout << "Contractor created: " << name << " (Specialization: " << specialization << ")" << endl;
+    }
+    virtual void display() const override {
+        cout << "Contractor - Name: " << name << ", Specialization: " << specialization
+             << ", Hourly Rate: $" << hourlyRate << ", Contract Duration: " << contractDuration << " months" << endl;
+    }
+    virtual void work() const override {
+        cout << "Contractor " << name << " is working on a temporary project." << endl;
+    }
+    virtual void doWork() const override {
+        cout << "Contractor " << name << " is completing freelance tasks for the company!" << endl;
+    }
+    virtual string getRole() const override {
+        return "Contractor";
+    }
+    virtual ~Contractor() {
+        cout << "Contractor destroyed: " << name << endl;
+    }
+};
+
+void performWork(const Workable& worker) {
+    worker.doWork();
 }
-
-class Payroll {
-private:
-    Employee *employee;
-    double bonus;
-public:
-    Payroll(Employee *e, double b = 0.0) : employee(e), bonus(b) {
-        cout << "Payroll created for: " << employee->getName() << endl;
-    }
-    void info() const {
-        cout << "Payroll - Employee: " << employee->getName() << ", Salary: "
-             << employee->getSalary() << ", Bonus: " << bonus << endl;
-    }
-    ~Payroll() {
-        cout << "Payroll destroyed for: " << employee->getName() << endl;
-    }
-};
-
-class Department {
-private:
-    string name;
-    vector<Employee*> employees;
-public:
-    Department(string n = "Unknown") : name(n) {
-        cout << "Department created: " << name << endl;
-    }
-    void addEmployee(Employee* e) {
-        employees.push_back(e);
-    }
-    void details() const {
-        cout << "Department: " << name << ", Employees: " << employees.size() << endl;
-        for (const auto& e : employees) {
-            e->display();
-        }
-    }
-    ~Department() {
-        cout << "Department destroyed: " << name << endl;
-    }
-};
 
 int main() {
     Employee emp1("Vasya Pupkin", "Software Engineer", 75000);
     emp1.display();
     cout << "Total Employees: " << Employee::getEmployeeCount() << endl;
 
-    Employee emp2 = emp1;
-    emp2.display();
-    cout << "Total Employees after copying: " << Employee::getEmployeeCount() << endl;
-
     Manager mgr1("Walter White", "Project Manager", 90000, 10);
     mgr1.display();
 
-    Payroll payroll1(&emp1, 5000);
-    payroll1.info();
-
-    Department dept1("IT Department");
-    dept1.addEmployee(&emp1);
-    dept1.addEmployee(&mgr1);
-    dept1.details();
-
-    Person* p = &emp1;
-    p->display();
-    p->work();
-    p->show();
-
-    Intern intern1("John Doe", "Intern", 20000);
+    Intern intern1("Johnny", "IT");
+    performWork(intern1);
     intern1.display();
 
-    showEmployeeDetails(emp1);
-    showEmployeeDetails(mgr1);
-    showEmployeeDetails(intern1);
+    Contractor contractor1("Alice", "Web Development", 50.0, 6);
+    performWork(contractor1);
+    contractor1.display();
+
+    cout << emp1.getName() << " is an " << emp1.getRole() << endl;
+    cout << mgr1.getName() << " is a " << mgr1.getRole() << endl;
+    cout << intern1.getRole() << " is an Intern" << endl;
+    cout << contractor1.getRole() << " is a Contractor" << endl;
 
     return 0;
 }
+
 
