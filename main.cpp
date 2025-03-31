@@ -42,7 +42,7 @@ public:
         employeeCount++;
         cout << "Employee copied: " << name << endl;
     }
-    ~Employee() {
+    virtual ~Employee() {
         cout << "Employee destroyed: " << name << endl;
         employeeCount--;
     }
@@ -81,6 +81,30 @@ public:
         cout << "Manager destroyed: " << name << endl;
     }
 };
+
+class Intern final : public Employee {
+public:
+    Intern(string n, string p, double s) : Employee(n, p, s) {
+        cout << "Intern created: " << name << endl;
+    }
+    void display() const final override {
+        cout << "Intern - Name: " << name << ", Position: " << position << ", Salary: " << salary << endl;
+    }
+    ~Intern() {
+        cout << "Intern destroyed: " << name << endl;
+    }
+};
+
+// class SeniorIntern : public Intern {
+ //public:
+   //  SeniorIntern(string n, string p, double s) : Intern(n, p, s) {
+     //    cout << "SeniorIntern created: " << name << endl;
+     //}
+ //};
+
+void showEmployeeDetails(const Employee& emp) {
+    emp.display();
+}
 
 class Payroll {
 private:
@@ -144,8 +168,14 @@ int main() {
     Person* p = &emp1;
     p->display();
     p->work();
-
     p->show();
+
+    Intern intern1("John Doe", "Intern", 20000);
+    intern1.display();
+
+    showEmployeeDetails(emp1);
+    showEmployeeDetails(mgr1);
+    showEmployeeDetails(intern1);
 
     return 0;
 }
