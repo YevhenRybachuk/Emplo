@@ -1,1 +1,2 @@
-Vasya,Software Engineer,40000,2
+Demian Maksimov,Software Engineer,5,3
+Sasha Savich,Software Engineer,3,3

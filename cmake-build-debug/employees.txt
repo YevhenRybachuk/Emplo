@@ -1,0 +1,5 @@
+Vasya Pupkin,Software Engineer,40000
+Andriy Borsuk,Software Engineer,50000
+Johhny Sins,Software Engineer,48000
+Andriy Saychuk,Software Engineer,45000
+Vladislav Ivanchuk,Software Engineer,37000

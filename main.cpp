@@ -18,10 +18,6 @@ public:
         cout << "Name: " << name << endl;
     }
 
-    void staticBindingExample() {
-        cout << "I am a Person" << endl;
-    }
-
     string getName() const { return name; }
 };
 
@@ -65,7 +61,7 @@ public:
 
     virtual void display() const override {
         cout << "Contractor - Name: " << name << ", Specialization: " << specialization
-             << ", Hourly Rate: $" << hourlyRate << ", Contract Duration: " << contractDuration << " months" << endl;
+             << ", Hourly Rate: " << hourlyRate << ", Contract Duration: " << contractDuration << " months" << endl;
     }
 
     string getSpecialization() const { return specialization; }
@@ -139,6 +135,7 @@ void loadContractorsFromFile() {
         contractors.emplace_back(name, spec, rate, duration);
     }
 }
+
 
 void addEmployee() {
     string name, position;
@@ -227,6 +224,11 @@ void removeContractor() {
     }
 }
 
+void viewAllEmployees() {
+    for (const auto& e : employees) e.display();
+    logAction("User viewed all emloyees");
+}
+
 void viewAllInterns() {
     for (const auto& i : interns) i.display();
     logAction("User viewed all interns");
@@ -243,14 +245,37 @@ void viewHistory() {
     while (getline(logFile, line)) cout << line << endl;
 }
 
+void viewAllPeople() {
+    cout << "\nAll People Working in the Company:\n";
+    for (const auto& e : employees) {
+        e.display();
+    }
+    for (const auto& i : interns) {
+        i.display();
+    }
+    for (const auto& c : contractors) {
+        c.display();
+    }
+}
+
 void adminMenu() {
     int choice;
     do {
         cout << "\nAdmin Menu:\n";
-        cout << "1. Add Employee\n2. Add Intern\n3. Add Contractor\n";
-        cout << "4. Remove Employee\n5. Remove Intern\n6. Remove Contractor\n";
-        cout << "7. View All Employees\n8. View All Interns\n9. View All Contractors\n";
-        cout << "10. View History\n11. Exit\nChoice: ";
+        cout << "1. Add Employee\n";
+        cout << "2. Add Intern\n";
+        cout << "3. Add Contractor\n";
+        cout << "4. Remove Employee\n";
+        cout << "5. Remove Intern\n";
+        cout << "6. Remove Contractor\n";
+        cout << "7. View Employees\n";
+        cout << "8. View Interns\n";
+        cout << "9. View Contractors\n";
+        cout << "10. View All Workers\n";
+        cout << "11. View History\n";
+        cout << "12. Exit\n";
+        cout << "Choice: ";
+
         cin >> choice;
         switch (choice) {
             case 1: addEmployee(); break;
@@ -259,28 +284,34 @@ void adminMenu() {
             case 4: removeEmployee(); break;
             case 5: removeIntern(); break;
             case 6: removeContractor(); break;
-            case 7: for (auto& e : employees) e.display(); break;
+            case 7: viewAllEmployees(); break;
             case 8: viewAllInterns(); break;
             case 9: viewAllContractors(); break;
-            case 10: viewHistory(); break;
-            case 11: cout << "Logging out.\n"; break;
+            case 10: viewAllPeople(); break;
+            case 11: viewHistory(); break;
+            case 12: cout << "Logging out.\n"; break;
             default: cout << "Invalid option.\n";
         }
-    } while (choice != 11);
+    } while (choice != 12);
 }
 
 void userMenu() {
     int choice;
     do {
         cout << "\nUser Menu:\n";
-        cout << "1. View All Employees\n.";
-        cout << "2. View All Interns\n3. View All Contractors\n4. Exit\nChoice: ";
+        cout << "1. View Employees\n";
+        cout << "2. View Interns\n";
+        cout << "3. View Contractors\n";
+        cout << "4. View All Workers\n";
+        cout << "5. Exit\n";
+        cout << "Choice: ";
         cin >> choice;
         switch (choice) {
-            case 1: for (auto& e : employees) e.display(); logAction("User viewed all employees"); break;
+            case 1: viewAllEmployees(); break;
             case 2: viewAllInterns(); break;
             case 3: viewAllContractors(); break;
-            case 4: break;
+            case 4: viewAllPeople(); break;
+            case 5: break;
             default: cout << "Invalid option.\n";
         }
     } while (choice != 5);
@@ -310,6 +341,7 @@ int main() {
     loadEmployeesFromFile();
     loadInternsFromFile();
     loadContractorsFromFile();
+
     loginMenu();
     return 0;
 }
